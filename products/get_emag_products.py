@@ -28,6 +28,7 @@ def saveProductInfoToFile(productName, productPrice):
 def getProductInfo(link):
     response = requests.get(link)
     tree = html.fromstring(response.content)
+    # the productName list might be empty: analyse that situation and find a solution
     productName = tree.xpath('//div[@id="offer-title"]/h1/text()')[0]
     productPriceElement = tree.xpath('//div[@class="prices"]/span')
     productImagePathElement = tree.xpath('//a[@class="gallery-image"]')
