@@ -28,23 +28,22 @@ def saveProductInfoToFile(productName, productPrice):
 def getProductInfo(link):
     response = requests.get(link)
     tree = html.fromstring(response.content)
-    productName = tree.xpath('//div[@id="offer-title"]/h1/text()')
+    # the productName list might be empty: analyse that situation and find a solution
+    productName = tree.xpath('//div[@id="offer-title"]/h1/text()')[0]
     productPriceElement = tree.xpath('//div[@class="prices"]/span')
     productImagePathElement = tree.xpath('//a[@class="gallery-image"]')
 
-    if len(productName) != 0:
-        productName = productName[0]
-        productPrice = productPriceElement[0].attrib['content']
-        productImagePath = productImagePathElement[0].attrib['data-original']
-        productImagePath = productImagePath[2:]
+    productPrice = productPriceElement[0].attrib['content']
+    productImagePath = productImagePathElement[0].attrib['data-original']
+    productImagePath = productImagePath[2:]
 
-        print productName + ' ' + productPrice + ' ' + productImagePath
+    print productName + ' ' + productPrice + ' ' + productImagePath
 
-        # save file with product info
-        saveProductInfoToFile(productName, productPrice)
+    # save file with product info
+    saveProductInfoToFile(productName, productPrice)
 
-        # download the image
-        downloadImage(productImagePath, productName)
+    # download the image
+    downloadImage(productImagePath, productName)
 
 def getProductsFromCategory(category):
     os.chdir(category)
